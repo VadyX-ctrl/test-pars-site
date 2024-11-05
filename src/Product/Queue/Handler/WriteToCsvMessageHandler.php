@@ -10,9 +10,13 @@ use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 #[AsMessageHandler]
 final class WriteToCsvMessageHandler
 {
+    public function __construct()
+    {
+    }
+
     public function __invoke(WriteToCsvMessage $message): void
     {
-        $data = $message->data;
+        $product = $message->product;
 
         $filePath = dirname(__DIR__, 4) . '/var/data/products.csv';
 
@@ -20,13 +24,13 @@ final class WriteToCsvMessageHandler
             mkdir(dirname($filePath), 0777, true);
         }
 
-        $file = fopen($filePath, 'a');
+        $file = fopen($filePath, 'ab');
 
         if ($file === false) {
             throw new \RuntimeException('Не вдалося відкрити файл для запису');
         }
 
-        fputcsv($file, $data);
+        fputcsv($file, $product->serialize());
         fclose($file);
     }
 }

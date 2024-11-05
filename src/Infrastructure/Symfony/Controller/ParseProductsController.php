@@ -2,7 +2,6 @@
 
 namespace App\Infrastructure\Symfony\Controller;
 
-use App\Infrastructure\Symfony\Parser\ProductFetcher;
 use App\Product\Factory\ProductFactory;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -10,7 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 final readonly class ParseProductsController
 {
     public function __construct(
-        private ProductFetcher $productFetcher,
+//        private ProductFetcher $productFetcher,
         private ProductFactory $productFactory
     ) {
     }

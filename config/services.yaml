@@ -8,10 +8,15 @@ services:
   app.product.factory:
     class: App\Product\Factory\ProductFactory
 
-  app.product.fetcher:
-    class: App\Infrastructure\Symfony\Parser\ProductFetcher
+  app.parser.html_fetcher:
+    class: App\Parser\HtmlFetcher
     arguments:
       - '@http_client'
+
+  app.parser.crawler.book:
+    class: App\Infrastructure\Symfony\Parser\CrawlerBookParser
+    arguments:
+      - '@app.parser.html_fetcher'
       - '@app.product.factory'
 
   app.product.storage.mysql:
@@ -23,14 +28,14 @@ services:
     public: true
     class: App\Infrastructure\Symfony\Controller\ParseProductsController
     arguments:
-      - '@app.product.fetcher'
+#      - '@app.product.fetcher'
       - '@app.product.factory'
 
   app.parse_product.command:
     public: true
     class: App\Infrastructure\Symfony\Command\ParseProductsCommand
     arguments:
-      - '@app.product.fetcher'
+      - '@app.parser.crawler.book'
       - '@app.product.storage'
       - '@messenger.bus.default'
     tags:

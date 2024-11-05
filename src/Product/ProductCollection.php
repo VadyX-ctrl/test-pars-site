@@ -41,6 +41,13 @@ final class ProductCollection implements \IteratorAggregate
         return $productsData;
     }
 
+    public function merge(ProductCollection $products): ProductCollection
+    {
+        $this->products = array_merge($this->products, iterator_to_array($products));
+
+        return $this;
+    }
+
     private function addProduct(Product $product): void
     {
         $this->products[] = $product;
