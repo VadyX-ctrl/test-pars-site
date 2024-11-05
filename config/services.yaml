@@ -1,0 +1,43 @@
+parameters:
+    service_name: 'test-pars-site'
+    mysql.dsn: '%env(resolve:DATABASE_URL)%'
+
+services:
+  app.product.storage: '@app.product.storage.mysql'
+
+  app.product.factory:
+    class: App\Product\Factory\ProductFactory
+
+  app.product.fetcher:
+    class: App\Infrastructure\Symfony\Parser\ProductFetcher
+    arguments:
+      - '@http_client'
+      - '@app.product.factory'
+
+  app.product.storage.mysql:
+    class: App\Product\Storage\Mysql\ProductMysqlStorage
+    arguments:
+      - '@doctrine.dbal.mysql_connection'
+
+  app.parse_product.controller:
+    public: true
+    class: App\Infrastructure\Symfony\Controller\ParseProductsController
+    arguments:
+      - '@app.product.fetcher'
+      - '@app.product.factory'
+
+  app.parse_product.command:
+    public: true
+    class: App\Infrastructure\Symfony\Command\ParseProductsCommand
+    arguments:
+      - '@app.product.fetcher'
+      - '@app.product.storage'
+      - '@messenger.bus.default'
+    tags:
+      - { name: console.command }
+
+  app.parse_product.message_handler:
+    public: true
+    class: App\Product\Queue\Handler\WriteToCsvMessageHandler
+    tags:
+      - { name: messenger.message_handler }

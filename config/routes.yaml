@@ -1,0 +1,4 @@
+app.products.parse:
+    path: 'products/pars'
+    methods: [ POST ]
+    controller: app.parse_product.controller

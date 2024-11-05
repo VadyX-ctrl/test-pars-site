@@ -1,0 +1,9 @@
+doctrine:
+    dbal:
+        default_connection: mysql
+        connections:
+            mysql:
+                url: '%mysql.dsn%'
+                driver: 'pdo_mysql'
+                server_version: '8.0'
+                charset: utf8mb4
