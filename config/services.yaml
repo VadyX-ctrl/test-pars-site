@@ -23,13 +23,13 @@ services:
     class: App\Product\Storage\Mysql\ProductMysqlStorage
     arguments:
       - '@doctrine.dbal.mysql_connection'
-
-  app.parse_product.controller:
-    public: true
-    class: App\Infrastructure\Symfony\Controller\ParseProductsController
-    arguments:
-#      - '@app.product.fetcher'
       - '@app.product.factory'
+
+  app.get_products.controller:
+    public: true
+    class: App\Infrastructure\Symfony\Controller\GetProductsController
+    arguments:
+      - '@app.product.storage'
 
   app.parse_product.command:
     public: true
