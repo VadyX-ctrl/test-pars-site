@@ -1,4 +1,4 @@
-app.products.parse:
-    path: 'products/pars'
-    methods: [ POST ]
-    controller: app.parse_product.controller
+app.products.get:
+    path: '/products'
+    methods: [ GET ]
+    controller: app.get_products.controller

@@ -3,4 +3,4 @@ framework:
         transports:
             async: 'doctrine://mysql?queue_name=messages'
         routing:
-            'App\Product\Queue\Message\WriteToCsvMessage': async
+            'App\Message\WriteToCsvMessage': async

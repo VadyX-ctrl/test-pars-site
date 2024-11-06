@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Product;
 
-final readonly class Product
+final readonly class Product implements \JsonSerializable
 {
     public const NAME_FIELD = 'name';
     public const PRICE_FIELD = 'price';
@@ -19,7 +19,7 @@ final readonly class Product
     ) {
     }
 
-    public function serialize(): array
+    public function jsonSerialize(): array
     {
         return [
             self::NAME_FIELD => $this->name,

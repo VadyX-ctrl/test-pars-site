@@ -2,64 +2,43 @@
 
 namespace App\Infrastructure\Symfony\Command;
 
-use App\Infrastructure\Symfony\Parser\ProductFetcher;
-use App\Product\Queue\Message\WriteToCsvMessage;
+use App\Message\WriteToCsvMessage;
+use App\Parser\ParserInterface;
 use App\Product\Storage\ProductStorageInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 
+#[AsCommand(name: 'app:parse-products')]
 class ParseProductsCommand extends Command
 {
-    public const NAME = 'app:parse-products';
-
     public function __construct(
-        private readonly ProductFetcher $productFetcher,
+        private readonly ParserInterface $parser,
         private readonly ProductStorageInterface $productStorage,
         private readonly MessageBusInterface $bus
     ) {
         parent::__construct();
     }
 
-    protected function configure(): void
-    {
-        $this->setName(self::NAME)
-            ->setDescription('Parse products from input URLs')
-            ->addArgument(
-                'urls',
-                InputArgument::IS_ARRAY | InputArgument::REQUIRED,
-                'List of URLs for parse (add space)'
-            );
-    }
-
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $output->writeln('Pars start.');
 
-        $urls = $input->getArgument('urls');
+        $products = $this->parser->fetchProducts();
 
-        foreach ($urls as $url) {
-            $output->writeln("Парсинг URL: $url");
-            $products = $this->productFetcher->fetchProducts($url);
+        foreach ($products as $product) {
+            try {
+                $this->productStorage->insert($product);
+            } catch (\Throwable $e) {
+                $output->writeln(sprintf('Failed insert product %s : %s', $product->name, $e->getMessage()));
+            }
 
-            foreach ($products as $product) {
-                try {
-                    $this->productStorage->insert($product);
-                    $this->bus->dispatch(
-                        new WriteToCsvMessage(
-                            [
-                                $product->name,
-                                $product->price,
-                                $product->imageLink,
-                                $product->productLink
-                            ]
-                        )
-                    );
-                } catch (\Throwable $e) {
-                    $output->writeln(sprintf('Faild insert product %s : %s', $product->name, $e->getMessage()));
-                }
+            try {
+                $this->bus->dispatch(new WriteToCsvMessage($product));
+            } catch (\Throwable $e) {
+                $output->writeln(sprintf('Failed send to event bus product %s : %s', $product->name, $e->getMessage()));
             }
         }
 

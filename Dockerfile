@@ -1,12 +1,14 @@
-FROM php:8.2-cli
+FROM php:8.3-fpm
 
 RUN apt-get update && apt-get install -y \
-    iputils-ping \
     git \
     unzip \
     libpq-dev \
-    libxml2-dev && \
-    docker-php-ext-install pdo pdo_mysql
+    libxml2-dev \
+    default-mysql-client \
+    libmariadb-dev-compat \
+    libmariadb-dev \
+    && docker-php-ext-install pdo pdo_mysql
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
@@ -14,8 +16,11 @@ WORKDIR /app
 
 COPY . .
 
-RUN composer install
+RUN chmod +x docker-entrypoint.sh
+RUN chmod +x wait-for-it.sh
 
-EXPOSE 8000
+RUN composer install --no-interaction --optimize-autoloader
 
-CMD ["php", "-S", "0.0.0.0:8000", "-t", "public"]
+EXPOSE 9000
+
+ENTRYPOINT ["./docker-entrypoint.sh"]
