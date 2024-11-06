@@ -8,9 +8,9 @@ use App\Message\WriteToCsvMessage;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler]
-final class WriteToCsvMessageHandler
+final readonly class WriteToCsvMessageHandler
 {
-    public function __construct(private readonly string $filePath)
+    public function __construct(private string $filePath)
     {
     }
 
@@ -25,10 +25,10 @@ final class WriteToCsvMessageHandler
         $file = fopen($this->filePath, 'ab');
 
         if ($file === false) {
-            throw new \RuntimeException('Faild to open file');
+            throw new \RuntimeException('Failed to open file');
         }
 
-        fputcsv($file, $product->serialize());
+        fputcsv($file, $product->jsonSerialize());
         fclose($file);
     }
 }
