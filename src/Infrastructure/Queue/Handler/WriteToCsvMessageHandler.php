@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Queue\Handler;
 
-use App\Infrastructure\Queue\Message\WriteToCsvMessage;
+use App\Message\WriteToCsvMessage;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler]

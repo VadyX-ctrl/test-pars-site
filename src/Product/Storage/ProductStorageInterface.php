@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Infrastructure\Storage;
+namespace App\Product\Storage;
 
 use App\Product\Product;
 use App\Product\ProductCollection;

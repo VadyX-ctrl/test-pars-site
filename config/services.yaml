@@ -21,7 +21,7 @@ services:
       - '@app.product.factory'
 
   app.product.storage.mysql:
-    class: App\Infrastructure\Storage\Mysql\ProductMysqlStorage
+    class: App\Infrastructure\Mysql\ProductMysqlStorage
     arguments:
       - '@doctrine.dbal.mysql_connection'
       - '@app.product.factory'

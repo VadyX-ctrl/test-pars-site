@@ -2,9 +2,9 @@
 
 namespace App\Infrastructure\Symfony\Command;
 
-use App\Infrastructure\Queue\Message\WriteToCsvMessage;
-use App\Infrastructure\Storage\ProductStorageInterface;
+use App\Message\WriteToCsvMessage;
 use App\Parser\ParserInterface;
+use App\Product\Storage\ProductStorageInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;

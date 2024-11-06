@@ -2,7 +2,7 @@
 
 namespace App\Infrastructure\Symfony\Controller;
 
-use App\Infrastructure\Storage\ProductStorageInterface;
+use App\Product\Storage\ProductStorageInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 final readonly class GetProductsController

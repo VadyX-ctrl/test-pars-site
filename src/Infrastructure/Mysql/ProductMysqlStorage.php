@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Infrastructure\Storage\Mysql;
+namespace App\Infrastructure\Mysql;
 
-use App\Infrastructure\Storage\ProductStorageInterface;
 use App\Product\Factory\ProductFactory;
 use App\Product\Product;
 use App\Product\ProductCollection;
+use App\Product\Storage\ProductStorageInterface;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\DBAL\Types\Types;
