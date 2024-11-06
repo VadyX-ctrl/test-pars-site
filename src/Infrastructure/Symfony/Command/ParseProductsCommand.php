@@ -33,7 +33,7 @@ class ParseProductsCommand extends Command
                 $this->productStorage->insert($product);
                 $this->bus->dispatch(new WriteToCsvMessage($product));
             } catch (\Throwable $e) {
-                $output->writeln(sprintf('Faild insert product %s : %s', $product->name, $e->getMessage()));
+                $output->writeln(sprintf('Failed insert product %s : %s', $product->name, $e->getMessage()));
             }
         }
 

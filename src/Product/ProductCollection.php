@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Product;
 
-final class ProductCollection implements \IteratorAggregate
+final class ProductCollection implements \IteratorAggregate, ProductSerializeInterface
 {
     /**
      * @var Product[]

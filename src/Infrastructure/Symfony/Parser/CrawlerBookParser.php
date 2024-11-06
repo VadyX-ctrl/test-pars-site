@@ -64,7 +64,7 @@ final readonly class CrawlerBookParser implements ParserInterface
 
                 $products[] = $product;
             } catch (\Exception $e) {
-                // Обробка помилки або логування
+                // TODO add logging
             }
         });
 

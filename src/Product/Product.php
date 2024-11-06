@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Product;
 
-final readonly class Product
+final readonly class Product implements ProductSerializeInterface
 {
     public const NAME_FIELD = 'name';
     public const PRICE_FIELD = 'price';

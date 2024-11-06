@@ -9,6 +9,7 @@ use App\Product\Product;
 use App\Product\ProductCollection;
 use App\Product\Storage\ProductStorageInterface;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\DBAL\Types\Types;
 
 final readonly class ProductMysqlStorage implements ProductStorageInterface
@@ -32,7 +33,7 @@ final readonly class ProductMysqlStorage implements ProductStorageInterface
         $data = $result->fetchAllAssociative();
 
         if ([] === $data) {
-            return [];
+            return $this->productFactory->createCollection([]);
         }
 
         $products = [];
@@ -47,8 +48,9 @@ final readonly class ProductMysqlStorage implements ProductStorageInterface
     {
         [$parameters, $types] = $this->getValuesParametersTypes($product);
 
-        $this->connection->executeQuery(
-            '
+        try {
+            $this->connection->executeQuery(
+                '
             INSERT
                    INTO products (
                                   name,
@@ -63,9 +65,12 @@ final readonly class ProductMysqlStorage implements ProductStorageInterface
                                   :product_link
                    )
                    ',
-            $parameters,
-            $types
-        );
+                $parameters,
+                $types
+            );
+        } catch (UniqueConstraintViolationException) {
+            return 1;
+        }
 
         return (int)$this->connection->lastInsertId();
     }

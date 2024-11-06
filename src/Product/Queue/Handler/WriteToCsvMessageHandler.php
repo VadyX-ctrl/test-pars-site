@@ -27,7 +27,7 @@ final class WriteToCsvMessageHandler
         $file = fopen($filePath, 'ab');
 
         if ($file === false) {
-            throw new \RuntimeException('Не вдалося відкрити файл для запису');
+            throw new \RuntimeException('Faild to open file');
         }
 
         fputcsv($file, $product->serialize());
