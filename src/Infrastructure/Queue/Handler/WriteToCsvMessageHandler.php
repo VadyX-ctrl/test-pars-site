@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace App\Product\Queue\Handler;
+namespace App\Infrastructure\Queue\Handler;
 
-use App\Product\Queue\Message\WriteToCsvMessage;
+use App\Infrastructure\Queue\Message\WriteToCsvMessage;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler]
 final class WriteToCsvMessageHandler
 {
-    public function __construct()
+    public function __construct(private readonly string $filePath)
     {
     }
 
@@ -18,13 +18,11 @@ final class WriteToCsvMessageHandler
     {
         $product = $message->product;
 
-        $filePath = dirname(__DIR__, 4) . '/var/data/products.csv';
-
-        if (!file_exists(dirname($filePath))) {
-            mkdir(dirname($filePath), 0777, true);
+        if (!file_exists(dirname($this->filePath))) {
+            mkdir(dirname($this->filePath), 0777, true);
         }
 
-        $file = fopen($filePath, 'ab');
+        $file = fopen($this->filePath, 'ab');
 
         if ($file === false) {
             throw new \RuntimeException('Faild to open file');

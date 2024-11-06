@@ -2,9 +2,9 @@
 
 namespace App\Infrastructure\Symfony\Command;
 
+use App\Infrastructure\Queue\Message\WriteToCsvMessage;
+use App\Infrastructure\Storage\ProductStorageInterface;
 use App\Parser\ParserInterface;
-use App\Product\Queue\Message\WriteToCsvMessage;
-use App\Product\Storage\ProductStorageInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -31,9 +31,14 @@ class ParseProductsCommand extends Command
         foreach ($products as $product) {
             try {
                 $this->productStorage->insert($product);
-                $this->bus->dispatch(new WriteToCsvMessage($product));
             } catch (\Throwable $e) {
                 $output->writeln(sprintf('Failed insert product %s : %s', $product->name, $e->getMessage()));
+            }
+
+            try {
+                $this->bus->dispatch(new WriteToCsvMessage($product));
+            } catch (\Throwable $e) {
+                $output->writeln(sprintf('Failed send to event bus product %s : %s', $product->name, $e->getMessage()));
             }
         }
 

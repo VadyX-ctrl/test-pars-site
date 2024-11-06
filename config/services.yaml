@@ -1,6 +1,7 @@
 parameters:
     service_name: 'test-pars-site'
     mysql.dsn: '%env(resolve:DATABASE_URL)%'
+    csv_file_path: '%kernel.project_dir%/App/Product/products.csv'
 
 services:
   app.product.storage: '@app.product.storage.mysql'
@@ -20,7 +21,7 @@ services:
       - '@app.product.factory'
 
   app.product.storage.mysql:
-    class: App\Product\Storage\Mysql\ProductMysqlStorage
+    class: App\Infrastructure\Storage\Mysql\ProductMysqlStorage
     arguments:
       - '@doctrine.dbal.mysql_connection'
       - '@app.product.factory'
@@ -43,6 +44,8 @@ services:
 
   app.parse_product.message_handler:
     public: true
-    class: App\Product\Queue\Handler\WriteToCsvMessageHandler
+    class: App\Infrastructure\Queue\Handler\WriteToCsvMessageHandler
+    arguments:
+      - '%csv_file_path%'
     tags:
       - { name: messenger.message_handler }

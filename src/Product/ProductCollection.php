@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Product;
 
-final class ProductCollection implements \IteratorAggregate, ProductSerializeInterface
+final class ProductCollection implements \IteratorAggregate, \JsonSerializable
 {
     /**
      * @var Product[]
@@ -31,16 +31,6 @@ final class ProductCollection implements \IteratorAggregate, ProductSerializeInt
         return [] === $this->products;
     }
 
-    public function serialize(): array
-    {
-        $productsData = [];
-        foreach ($this->products as $product) {
-            $productsData[] = $product->serialize();
-        }
-
-        return $productsData;
-    }
-
     public function merge(ProductCollection $products): ProductCollection
     {
         $this->products = array_merge($this->products, iterator_to_array($products));
@@ -51,5 +41,15 @@ final class ProductCollection implements \IteratorAggregate, ProductSerializeInt
     private function addProduct(Product $product): void
     {
         $this->products[] = $product;
+    }
+
+    public function jsonSerialize(): array
+    {
+        $productsData = [];
+        foreach ($this->products as $product) {
+            $productsData[] = $product->jsonSerialize();
+        }
+
+        return $productsData;
     }
 }

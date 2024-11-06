@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Product\Queue\Message;
+namespace App\Infrastructure\Queue\Message;
 
 use App\Product\Product;
 

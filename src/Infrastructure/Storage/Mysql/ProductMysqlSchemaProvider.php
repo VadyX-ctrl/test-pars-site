@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Product\Storage\Mysql;
+namespace App\Infrastructure\Storage\Mysql;
 
 use App\DBAL\Schema\Provider\DBALSchemaProviderInterface;
 use Doctrine\DBAL\Schema\Schema;

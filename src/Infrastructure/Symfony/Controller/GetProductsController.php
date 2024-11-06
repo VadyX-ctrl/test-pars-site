@@ -2,7 +2,7 @@
 
 namespace App\Infrastructure\Symfony\Controller;
 
-use App\Product\Storage\ProductStorageInterface;
+use App\Infrastructure\Storage\ProductStorageInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 final readonly class GetProductsController
@@ -16,7 +16,7 @@ final readonly class GetProductsController
     {
         return new JsonResponse(
             [
-                'products' => $this->productStorage->getProducts()->serialize()
+                'products' => $this->productStorage->getProducts()->jsonSerialize()
             ]
         );
     }
